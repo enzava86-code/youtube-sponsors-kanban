@@ -24,7 +24,7 @@ interface SponsorshipCardProps {
   sponsorship: Sponsorship;
   onView?: () => void;
   onMove?: () => void;
-  onUpdate?: (data: Partial<Sponsorship>) => void;
+  onEdit?: () => void;
   onDelete?: () => void;
 }
 
@@ -51,7 +51,7 @@ const contentTypeLabels = {
   mention: "Mención"
 };
 
-export function SponsorshipCard({ sponsorship, onView, onMove, onUpdate, onDelete }: SponsorshipCardProps) {
+export function SponsorshipCard({ sponsorship, onView, onMove, onEdit, onDelete }: SponsorshipCardProps) {
   const {
     attributes,
     listeners,
@@ -119,7 +119,7 @@ export function SponsorshipCard({ sponsorship, onView, onMove, onUpdate, onDelet
                   <Eye className="mr-2 h-4 w-4" />
                   Ver detalles
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onUpdate?.({})}>
+                <DropdownMenuItem onClick={onEdit}>
                   <Edit className="mr-2 h-4 w-4" />
                   Editar
                 </DropdownMenuItem>

@@ -193,7 +193,6 @@ export default function HomePage() {
         <KanbanBoard
           sponsorships={filteredSponsorships}
           onStatusChange={handleStatusChange}
-          onUpdate={handleUpdateSponsorship}
           onDelete={handleDeleteSponsorship}
         />
         
