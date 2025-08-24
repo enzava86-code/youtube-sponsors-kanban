@@ -14,6 +14,8 @@ interface LayoutProps {
   onNewDeal?: () => void;
   onExportData?: () => void;
   onCalendarView?: () => void;
+  onSearch?: (searchTerm: string) => void;
+  onCreateNew?: () => void;
 }
 
 export function Layout({ 
@@ -21,7 +23,9 @@ export function Layout({
   user, 
   onNewDeal, 
   onExportData, 
-  onCalendarView 
+  onCalendarView,
+  onSearch,
+  onCreateNew
 }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
@@ -30,6 +34,8 @@ export function Layout({
         onNewDeal={onNewDeal}
         onExportData={onExportData}
         onCalendarView={onCalendarView}
+        onSearch={onSearch}
+        onCreateNew={onCreateNew}
       />
       <main className="p-6">
         {children}

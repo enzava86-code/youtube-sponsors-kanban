@@ -12,6 +12,9 @@ interface KanbanBoardProps {
   onEditSponsorship?: (sponsorship: Sponsorship) => void;
   onViewSponsorship?: (sponsorship: Sponsorship) => void;
   onMoveSponsorship?: (sponsorship: Sponsorship, newStatus: SponsorshipStatus) => void;
+  onStatusChange?: (id: string, newStatus: SponsorshipStatus) => Promise<void>;
+  onUpdate?: (id: string, data: Partial<Sponsorship>) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 }
 
 const columns: ColumnType[] = [
@@ -85,7 +88,10 @@ export function KanbanBoard({
   onAddSponsorship,
   onEditSponsorship,
   onViewSponsorship,
-  onMoveSponsorship
+  onMoveSponsorship,
+  onStatusChange: _onStatusChange,
+  onUpdate: _onUpdate,
+  onDelete: _onDelete
 }: KanbanBoardProps) {
   const [, setActiveId] = useState<string | null>(null);
   const [localSponsorships, setLocalSponsorships] = useState(sponsorships);

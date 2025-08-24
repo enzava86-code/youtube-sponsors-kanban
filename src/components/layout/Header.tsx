@@ -23,9 +23,11 @@ interface HeaderProps {
   onNewDeal?: () => void;
   onExportData?: () => void;
   onCalendarView?: () => void;
+  onSearch?: (searchTerm: string) => void;
+  onCreateNew?: () => void;
 }
 
-export function Header({ user, onNewDeal, onExportData, onCalendarView }: HeaderProps) {
+export function Header({ user, onNewDeal, onExportData, onCalendarView, onSearch, onCreateNew }: HeaderProps) {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center px-6">
@@ -49,6 +51,7 @@ export function Header({ user, onNewDeal, onExportData, onCalendarView }: Header
             <Input
               placeholder="Buscar acuerdos, marcas..."
               className="pl-10"
+              onChange={(e) => onSearch?.(e.target.value)}
             />
           </div>
         </div>
@@ -73,7 +76,7 @@ export function Header({ user, onNewDeal, onExportData, onCalendarView }: Header
           </Button>
           <Button 
             size="sm"
-            onClick={onNewDeal}
+            onClick={onCreateNew || onNewDeal}
           >
             <Plus className="h-4 w-4 mr-2" />
             Nuevo Acuerdo

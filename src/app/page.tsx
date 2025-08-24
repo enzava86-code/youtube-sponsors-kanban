@@ -198,7 +198,7 @@ export default function HomePage() {
         />
         
         <CreateSponsorshipModal
-          isOpen={isCreateModalOpen}
+          open={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           onSubmit={handleCreateSponsorship}
         />
