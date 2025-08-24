@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Plus, Download, Calendar, User } from "lucide-react";
+import { Search, Plus, Download, Calendar, User, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,9 +25,11 @@ interface HeaderProps {
   onCalendarView?: () => void;
   onSearch?: (searchTerm: string) => void;
   onCreateNew?: () => void;
+  view: "kanban" | "calendar";
+  setView: (view: "kanban" | "calendar") => void;
 }
 
-export function Header({ user, onNewDeal, onExportData, onCalendarView, onSearch, onCreateNew }: HeaderProps) {
+export function Header({ user, onNewDeal, onExportData, onCalendarView, onSearch, onCreateNew, view, setView }: HeaderProps) {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center px-6">
@@ -58,14 +60,25 @@ export function Header({ user, onNewDeal, onExportData, onCalendarView, onSearch
 
         {/* Botones de Acción */}
         <div className="flex items-center space-x-2 flex-1 justify-end">
-          <Button 
-            size="sm"
-            onClick={onCalendarView}
-            className="bg-[#4285F4] text-white hover:bg-[#4285F4]/90"
-          >
-            <Calendar className="h-4 w-4 mr-2" />
-            Calendario
-          </Button>
+          {view === 'kanban' ? (
+            <Button 
+              size="sm"
+              onClick={() => setView('calendar')}
+              className="bg-[#4285F4] text-white hover:bg-[#4285F4]/90"
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              Calendario
+            </Button>
+          ) : (
+            <Button 
+              size="sm"
+              onClick={() => setView('kanban')}
+              className="bg-[#4285F4] text-white hover:bg-[#4285F4]/90"
+            >
+              <LayoutGrid className="h-4 w-4 mr-2" />
+              Tablero
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm"

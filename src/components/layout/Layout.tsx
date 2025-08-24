@@ -16,6 +16,8 @@ interface LayoutProps {
   onCalendarView?: () => void;
   onSearch?: (searchTerm: string) => void;
   onCreateNew?: () => void;
+  view: "kanban" | "calendar";
+  setView: (view: "kanban" | "calendar") => void;
 }
 
 export function Layout({ 
@@ -25,7 +27,9 @@ export function Layout({
   onExportData, 
   onCalendarView,
   onSearch,
-  onCreateNew
+  onCreateNew,
+  view,
+  setView
 }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
@@ -36,6 +40,8 @@ export function Layout({
         onCalendarView={onCalendarView}
         onSearch={onSearch}
         onCreateNew={onCreateNew}
+        view={view}
+        setView={setView}
       />
       <main className="p-6">
         {children}

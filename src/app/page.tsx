@@ -20,11 +20,36 @@ const currentUser: User = {
   verified: true
 };
 
+"use client";
+
+import { useState, useEffect } from "react";
+import { Layout } from "@/components/layout/Layout";
+import { KanbanBoard } from "@/components/kanban/KanbanBoard";
+import { MetricsDashboard } from "@/components/metrics/MetricsDashboard";
+import { CreateSponsorshipModal } from "@/components/modals/CreateSponsorshipModal";
+import { SponsorshipCalendar } from "@/components/calendar/SponsorshipCalendar";
+import { Sponsorship, SponsorshipStatus, DashboardMetrics, CreateSponsorshipData, User } from "@/types/sponsorship";
+import { sponsorshipApi, LoadingState, createLoadingState } from "@/lib/api";
+import { toast } from "sonner";
+
+// Sample user data
+const currentUser: User = {
+  id: "user1",
+  name: "Alex Creador",
+  email: "alex@canal.com",
+  channelName: "Canal Tech ES",
+  avatar: "",
+  subscriberCount: 125000,
+  verified: true
+};
+
 export default function HomePage() {
   const [sponsorships, setSponsorships] = useState<Sponsorship[]>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(createLoadingState());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingSponsorship, setEditingSponsorship] = useState<Sponsorship | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [view, setView] = useState<"kanban" | "calendar">("kanban");
 
   // Load sponsorships from API
   useEffect(() => {
@@ -95,6 +120,11 @@ export default function HomePage() {
       console.error('Error deleting sponsorship:', error);
     }
   };
+  
+  const handleEditSponsorship = (sponsorship: Sponsorship) => {
+    setEditingSponsorship(sponsorship);
+    setIsCreateModalOpen(true);
+  };
 
   // Calculate metrics
   const calculateMetrics = (): DashboardMetrics => {
@@ -152,7 +182,7 @@ export default function HomePage() {
 
   if (loadingState.isLoading) {
     return (
-      <Layout user={currentUser}>
+      <Layout user={currentUser} view={view} setView={setView}>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-youtube-red mx-auto mb-4"></div>
@@ -165,7 +195,7 @@ export default function HomePage() {
 
   if (loadingState.error) {
     return (
-      <Layout user={currentUser}>
+      <Layout user={currentUser} view={view} setView={setView}>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <p className="text-red-500 mb-4">Error: {loadingState.error}</p>
@@ -185,21 +215,33 @@ export default function HomePage() {
     <Layout 
       user={currentUser}
       onSearch={setSearchTerm}
-      onCreateNew={() => setIsCreateModalOpen(true)}
+      onCreateNew={() => {
+        setEditingSponsorship(null);
+        setIsCreateModalOpen(true);
+      }}
+      view={view}
+      setView={setView}
     >
       <div className="space-y-6">
-        <MetricsDashboard metrics={calculateMetrics()} />
-        
-        <KanbanBoard
-          sponsorships={filteredSponsorships}
-          onStatusChange={handleStatusChange}
-          onDelete={handleDeleteSponsorship}
-        />
+        {view === 'kanban' ? (
+          <>
+            <MetricsDashboard metrics={calculateMetrics()} />
+            <KanbanBoard
+              sponsorships={filteredSponsorships}
+              onStatusChange={handleStatusChange}
+              onDelete={handleDeleteSponsorship}
+              onEditSponsorship={handleEditSponsorship}
+            />
+          </>
+        ) : (
+          <SponsorshipCalendar sponsorships={sponsorships} />
+        )}
         
         <CreateSponsorshipModal
           open={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          onSubmit={handleCreateSponsorship}
+          onSubmit={editingSponsorship ? (data) => handleUpdateSponsorship(editingSponsorship.id, data) : handleCreateSponsorship}
+          sponsorship={editingSponsorship}
         />
       </div>
     </Layout>
