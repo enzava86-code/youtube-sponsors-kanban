@@ -5,28 +5,6 @@ import { Layout } from "@/components/layout/Layout";
 import { KanbanBoard } from "@/components/kanban/KanbanBoard";
 import { MetricsDashboard } from "@/components/metrics/MetricsDashboard";
 import { CreateSponsorshipModal } from "@/components/modals/CreateSponsorshipModal";
-import { Sponsorship, SponsorshipStatus, DashboardMetrics, CreateSponsorshipData, User } from "@/types/sponsorship";
-import { sponsorshipApi, LoadingState, createLoadingState } from "@/lib/api";
-import { toast } from "sonner";
-
-// Sample user data
-const currentUser: User = {
-  id: "user1",
-  name: "Alex Creador",
-  email: "alex@canal.com",
-  channelName: "Canal Tech ES",
-  avatar: "",
-  subscriberCount: 125000,
-  verified: true
-};
-
-"use client";
-
-import { useState, useEffect } from "react";
-import { Layout } from "@/components/layout/Layout";
-import { KanbanBoard } from "@/components/kanban/KanbanBoard";
-import { MetricsDashboard } from "@/components/metrics/MetricsDashboard";
-import { CreateSponsorshipModal } from "@/components/modals/CreateSponsorshipModal";
 import { SponsorshipCalendar } from "@/components/calendar/SponsorshipCalendar";
 import { Sponsorship, SponsorshipStatus, DashboardMetrics, CreateSponsorshipData, User } from "@/types/sponsorship";
 import { sponsorshipApi, LoadingState, createLoadingState } from "@/lib/api";
