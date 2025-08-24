@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Eye, Edit, Move, Calendar, DollarSign, Paperclip } from "lucide-react";
+import { MoreHorizontal, Eye, Edit, Move, Calendar, DollarSign, Paperclip, Trash } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,10 @@ import { es } from "date-fns/locale";
 
 interface SponsorshipCardProps {
   sponsorship: Sponsorship;
-  onEdit?: () => void;
   onView?: () => void;
   onMove?: () => void;
+  onUpdate?: (data: Partial<Sponsorship>) => void;
+  onDelete?: () => void;
 }
 
 const priorityColors = {
@@ -50,7 +51,7 @@ const contentTypeLabels = {
   mention: "Mención"
 };
 
-export function SponsorshipCard({ sponsorship, onEdit, onView, onMove }: SponsorshipCardProps) {
+export function SponsorshipCard({ sponsorship, onView, onMove, onUpdate, onDelete }: SponsorshipCardProps) {
   const {
     attributes,
     listeners,
@@ -118,13 +119,17 @@ export function SponsorshipCard({ sponsorship, onEdit, onView, onMove }: Sponsor
                   <Eye className="mr-2 h-4 w-4" />
                   Ver detalles
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onEdit}>
+                <DropdownMenuItem onClick={() => onUpdate?.({})}>
                   <Edit className="mr-2 h-4 w-4" />
                   Editar
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onMove}>
                   <Move className="mr-2 h-4 w-4" />
                   Mover a...
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

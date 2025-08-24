@@ -12,6 +12,9 @@ interface KanbanBoardProps {
   onEditSponsorship?: (sponsorship: Sponsorship) => void;
   onViewSponsorship?: (sponsorship: Sponsorship) => void;
   onMoveSponsorship?: (sponsorship: Sponsorship, newStatus: SponsorshipStatus) => void;
+  onStatusChange?: (id: string, newStatus: SponsorshipStatus) => Promise<void>;
+  onUpdate?: (id: string, data: Partial<Sponsorship>) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 }
 
 const columns: ColumnType[] = [
@@ -85,7 +88,10 @@ export function KanbanBoard({
   onAddSponsorship,
   onEditSponsorship,
   onViewSponsorship,
-  onMoveSponsorship
+  onMoveSponsorship,
+  onStatusChange,
+  onUpdate,
+  onDelete
 }: KanbanBoardProps) {
   const [, setActiveId] = useState<string | null>(null);
   const [localSponsorships, setLocalSponsorships] = useState(sponsorships);
@@ -138,7 +144,7 @@ export function KanbanBoard({
       setLocalSponsorships(updatedSponsorships);
 
       // Call parent handler
-      onMoveSponsorship?.(activeSponsorship, targetColumn.id);
+      onStatusChange?.(activeId, targetColumn.id);
     }
 
     setActiveId(null);
@@ -168,6 +174,8 @@ export function KanbanBoard({
                 onEditSponsorship={onEditSponsorship}
                 onViewSponsorship={onViewSponsorship}
                 onMoveSponsorship={(sponsorship) => onMoveSponsorship?.(sponsorship, column.id)}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
               />
             ))}
           </div>

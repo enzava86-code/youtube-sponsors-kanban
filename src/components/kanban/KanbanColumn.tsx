@@ -18,6 +18,8 @@ interface KanbanColumnProps {
   onEditSponsorship?: (sponsorship: Sponsorship) => void;
   onViewSponsorship?: (sponsorship: Sponsorship) => void;
   onMoveSponsorship?: (sponsorship: Sponsorship) => void;
+  onUpdate?: (id: string, data: Partial<Sponsorship>) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 }
 
 const statusColors = {
@@ -39,7 +41,9 @@ export function KanbanColumn({
   onAddSponsorship,
   onEditSponsorship,
   onViewSponsorship,
-  onMoveSponsorship
+  onMoveSponsorship,
+  onUpdate,
+  onDelete
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
@@ -82,6 +86,8 @@ export function KanbanColumn({
                 onEdit={() => onEditSponsorship?.(sponsorship)}
                 onView={() => onViewSponsorship?.(sponsorship)}
                 onMove={() => onMoveSponsorship?.(sponsorship)}
+                onUpdate={(data) => onUpdate?.(sponsorship.id, data)}
+                onDelete={() => onDelete?.(sponsorship.id)}
               />
             ))}
             {sponsorships.length === 0 && (
