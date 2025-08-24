@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Sponsorship {
+  id                     String    @id @default(cuid())
+  title                  String
+  brandName              String
+  brandLogo              String?
+  contactPerson          String
+  contactEmail           String
+  type                   String    // ContentType
+  description            String?
+  category               String
+  monetaryValue          Float
+  currency               String    // Currency
+  paymentMethod          String    // PaymentMethod
+  startDate              DateTime?
+  deliveryDate           DateTime
+  publishDate            DateTime?
+  isFlexiblePublishDate  Boolean?  @default(false)
+  status                 String    @default("prospect") // SponsorshipStatus
+  priority               String    @default("medium")   // Priority
+  notes                  String?
+  attachments            String?   // JSON string array
+  progressPercentage     Float?    @default(0)
+  lastActivity           DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@map("sponsorships")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  channelName     String
+  avatar          String?
+  subscriberCount Int?
+  verified        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("users")
+}
