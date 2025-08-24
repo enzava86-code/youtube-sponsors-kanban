@@ -1,103 +1,192 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Layout } from "@/components/layout/Layout";
+import { KanbanBoard } from "@/components/kanban/KanbanBoard";
+import { MetricsDashboard } from "@/components/metrics/MetricsDashboard";
+import { CreateSponsorshipModal } from "@/components/modals/CreateSponsorshipModal";
+import { Sponsorship, SponsorshipStatus, DashboardMetrics, CreateSponsorshipData } from "@/types/sponsorship";
+
+// Sample data
+const sampleSponsorships: Sponsorship[] = [
+  {
+    id: "1",
+    title: "Integración de Producto Tech",
+    brandName: "TechCorp",
+    brandLogo: "",
+    contactPerson: "Ana García",
+    contactEmail: "ana@techcorp.com",
+    type: "integration",
+    category: "tecnología",
+    description: "Demostración del nuevo gadget tech en video principal",
+    monetaryValue: 1500,
+    currency: "EUR",
+    status: "prospect",
+    priority: "high",
+    deliveryDate: new Date("2024-12-15"),
+    startDate: new Date("2024-11-01"),
+    publishDate: new Date("2024-12-20"),
+    paymentMethod: "bank_transfer",
+    progressPercentage: 0,
+    notes: "Cliente potencial muy interesado",
+    lastActivity: new Date("2024-11-10"),
+    createdAt: new Date("2024-10-01"),
+    updatedAt: new Date("2024-11-10")
+  },
+  {
+    id: "2",
+    title: "Review Gaming Headset",
+    brandName: "SoundMax",
+    brandLogo: "",
+    contactPerson: "Carlos Ruiz",
+    contactEmail: "carlos@soundmax.com",
+    type: "video",
+    category: "gaming",
+    description: "Review completo de los nuevos auriculares gaming",
+    monetaryValue: 800,
+    currency: "EUR",
+    status: "negotiation",
+    priority: "medium",
+    deliveryDate: new Date("2024-11-25"),
+    startDate: new Date("2024-10-15"),
+    publishDate: new Date("2024-11-30"),
+    paymentMethod: "paypal",
+    progressPercentage: 30,
+    notes: "Negociando condiciones de entrega",
+    lastActivity: new Date("2024-11-08"),
+    createdAt: new Date("2024-10-01"),
+    updatedAt: new Date("2024-11-08")
+  },
+  {
+    id: "3",
+    title: "Campaña Lifestyle Brand",
+    brandName: "UrbanStyle",
+    brandLogo: "",
+    contactPerson: "María López",
+    contactEmail: "maria@urbanstyle.com",
+    type: "short",
+    category: "lifestyle",
+    description: "Serie de shorts promocionando la nueva colección",
+    monetaryValue: 2200,
+    currency: "EUR",
+    status: "content_production",
+    priority: "high",
+    deliveryDate: new Date("2024-11-20"),
+    startDate: new Date("2024-10-01"),
+    publishDate: new Date("2024-11-25"),
+    paymentMethod: "bank_transfer",
+    progressPercentage: 75,
+    notes: "Contenido en fase final de edición",
+    lastActivity: new Date("2024-11-09"),
+    createdAt: new Date("2024-09-15"),
+    updatedAt: new Date("2024-11-09")
+  }
+];
+
+const sampleMetrics: DashboardMetrics = {
+  totalActiveDeals: 3,
+  monthlyRevenue: 4500,
+  pendingDeals: 2,
+  upcomingDeadlines: 1,
+  averageDealValue: 1500,
+  conversionRate: 0.65
+};
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [sponsorships, setSponsorships] = useState<Sponsorship[]>(sampleSponsorships);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [currentUser] = useState({
+    id: "user1",
+    name: "Canal Creator",
+    email: "creator@example.com",
+    channelName: "Canal Creator",
+    avatar: "",
+    subscriberCount: 50000,
+    verified: true
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const handleAddSponsorship = () => {
+    setShowCreateModal(true);
+  };
+
+  const handleEditSponsorship = (sponsorship: Sponsorship) => {
+    console.log("Edit sponsorship:", sponsorship);
+  };
+
+  const handleViewSponsorship = (sponsorship: Sponsorship) => {
+    console.log("View sponsorship:", sponsorship);
+  };
+
+  const handleMoveSponsorship = (sponsorship: Sponsorship, newStatus: SponsorshipStatus) => {
+    setSponsorships(prev => 
+      prev.map(s => 
+        s.id === sponsorship.id 
+          ? { ...s, status: newStatus, lastActivity: new Date() }
+          : s
+      )
+    );
+  };
+
+  const handleCreateSponsorship = (data: CreateSponsorshipData) => {
+    const newSponsorship: Sponsorship = {
+      id: Date.now().toString(),
+      title: data.title,
+      brandName: data.brandName,
+      contactPerson: data.contactPerson,
+      contactEmail: data.contactEmail,
+      type: data.type,
+      description: data.description,
+      category: data.category,
+      monetaryValue: data.monetaryValue,
+      currency: data.currency,
+      paymentMethod: data.paymentMethod,
+      startDate: data.startDate,
+      deliveryDate: data.deliveryDate,
+      publishDate: data.publishDate,
+      isFlexiblePublishDate: data.isFlexiblePublishDate,
+      status: data.initialStatus,
+      priority: data.priority,
+      notes: data.notes,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastActivity: new Date()
+    };
+    setSponsorships(prev => [...prev, newSponsorship]);
+    setShowCreateModal(false);
+  };
+
+  const handleExportData = () => {
+    console.log("Export data");
+  };
+
+  const handleCalendarView = () => {
+    console.log("Calendar view");
+  };
+
+  return (
+    <Layout 
+      user={currentUser}
+      onNewDeal={handleAddSponsorship}
+      onExportData={handleExportData}
+      onCalendarView={handleCalendarView}
+    >
+      <div className="space-y-6">
+        <MetricsDashboard metrics={sampleMetrics} />
+        
+        <KanbanBoard
+          sponsorships={sponsorships}
+          onAddSponsorship={handleAddSponsorship}
+          onEditSponsorship={handleEditSponsorship}
+          onViewSponsorship={handleViewSponsorship}
+          onMoveSponsorship={handleMoveSponsorship}
+        />
+      </div>
+
+      <CreateSponsorshipModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateSponsorship}
+      />
+    </Layout>
   );
 }
