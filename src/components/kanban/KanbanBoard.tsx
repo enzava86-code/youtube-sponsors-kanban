@@ -156,13 +156,13 @@ export function KanbanBoard({
   }, [sponsorships]);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <ScrollArea className="w-full whitespace-nowrap">
+        <div className="w-full overflow-x-auto">
           <div className="flex space-x-4 p-4 min-w-max">
             {columns.map((column) => (
               <KanbanColumn
@@ -177,7 +177,7 @@ export function KanbanBoard({
               />
             ))}
           </div>
-        </ScrollArea>
+        </div>
       </DndContext>
     </div>
   );

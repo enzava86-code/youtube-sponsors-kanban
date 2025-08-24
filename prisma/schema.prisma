@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,30 +8,30 @@ datasource db {
 }
 
 model Sponsorship {
-  id                     String    @id @default(cuid())
-  title                  String
-  brandName              String
-  brandLogo              String?
-  contactPerson          String
-  contactEmail           String
-  type                   String    // ContentType
-  description            String?
-  category               String
-  monetaryValue          Float
-  currency               String    // Currency
-  paymentMethod          String    // PaymentMethod
-  startDate              DateTime?
-  deliveryDate           DateTime
-  publishDate            DateTime?
-  isFlexiblePublishDate  Boolean?  @default(false)
-  status                 String    @default("prospect") // SponsorshipStatus
-  priority               String    @default("medium")   // Priority
-  notes                  String?
-  attachments            String?   // JSON string array
-  progressPercentage     Float?    @default(0)
-  lastActivity           DateTime?
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
+  id                    String    @id @default(cuid())
+  title                 String
+  brandName             String
+  brandLogo             String?
+  contactPerson         String
+  contactEmail          String
+  type                  String
+  description           String?
+  category              String
+  monetaryValue         Float
+  currency              String
+  paymentMethod         String
+  startDate             DateTime?
+  deliveryDate          DateTime
+  publishDate           DateTime?
+  isFlexiblePublishDate Boolean?  @default(false)
+  status                String    @default("prospect")
+  priority              String    @default("medium")
+  notes                 String?
+  attachments           String?
+  progressPercentage    Float?    @default(0)
+  lastActivity          DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("sponsorships")
 }

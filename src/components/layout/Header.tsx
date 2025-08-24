@@ -59,9 +59,9 @@ export function Header({ user, onNewDeal, onExportData, onCalendarView, onSearch
         {/* Botones de Acción */}
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <Button 
-            variant="outline" 
             size="sm"
             onClick={onCalendarView}
+            className="bg-[#4285F4] text-white hover:bg-[#4285F4]/90"
           >
             <Calendar className="h-4 w-4 mr-2" />
             Calendario
