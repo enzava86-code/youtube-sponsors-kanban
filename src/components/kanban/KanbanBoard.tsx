@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { DndContext, DragEndEvent, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { KanbanColumn } from "./KanbanColumn";
 import { Sponsorship, SponsorshipStatus, KanbanColumn as ColumnType } from "@/types/sponsorship";
 
@@ -12,9 +12,6 @@ interface KanbanBoardProps {
   onEditSponsorship?: (sponsorship: Sponsorship) => void;
   onViewSponsorship?: (sponsorship: Sponsorship) => void;
   onMoveSponsorship?: (sponsorship: Sponsorship, newStatus: SponsorshipStatus) => void;
-  onStatusChange?: (id: string, newStatus: SponsorshipStatus) => Promise<void>;
-  onUpdate?: (id: string, data: Partial<Sponsorship>) => Promise<void>;
-  onDelete?: (id: string) => Promise<void>;
 }
 
 const columns: ColumnType[] = [
@@ -88,10 +85,7 @@ export function KanbanBoard({
   onAddSponsorship,
   onEditSponsorship,
   onViewSponsorship,
-  onMoveSponsorship,
-  onStatusChange: _onStatusChange,
-  onUpdate: _onUpdate,
-  onDelete: _onDelete
+  onMoveSponsorship
 }: KanbanBoardProps) {
   const [, setActiveId] = useState<string | null>(null);
   const [localSponsorships, setLocalSponsorships] = useState(sponsorships);
