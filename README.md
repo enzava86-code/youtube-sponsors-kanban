@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📺 YouTube Sponsors Kanban
 
-## Getting Started
+Sistema completo de gestión de patrocinios para YouTubers con tablero Kanban interactivo, funcionalidad de drag & drop, y métricas en tiempo real.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-15.5.0-000000?style=for-the-badge&logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-Latest-000000?style=for-the-badge)
+
+## ✨ Características Principales
+
+### 🎯 Tablero Kanban Interactivo
+- **9 columnas de estado** desde "Prospecto" hasta "Completado"
+- **Drag & Drop funcional** para mover acuerdos entre etapas
+- **Indicadores visuales** durante el arrastre con animaciones
+- **Contadores automáticos** de acuerdos por columna
+
+### 📊 Dashboard de Métricas
+- **KPIs en tiempo real**: Acuerdos activos, ingresos mensuales
+- **Alertas de vencimiento**: Próximos plazos y tareas pendientes
+- **Valor promedio** de acuerdos y tasa de conversión
+
+### 🃏 Tarjetas de Patrocinio Avanzadas
+- **Indicadores de prioridad** con código de colores
+- **Alertas de vencimiento** automáticas
+- **Información completa**: Marca, contacto, monto, fecha de entrega
+- **Barras de progreso** para seguimiento visual
+- **Menús de acciones** para ver, editar y mover
+
+### 📝 Modal de Creación Completo
+- **Formulario estructurado** con validación
+- **Secciones organizadas** con acordeón:
+  - Información de marca
+  - Detalles del acuerdo
+  - Información financiera
+  - Fechas y plazos
+  - Estado inicial
+  - Notas y adjuntos
+
+### 🎨 Diseño y UX
+- **Tema YouTube**: Colores oficiales de YouTube
+- **Diseño responsive** con scroll horizontal en móvil
+- **Componentes Shadcn UI** para consistencia visual
+- **Dark mode ready** (preparado para modo oscuro)
+
+## 🚀 Tecnologías Utilizadas
+
+- **Next.js 15.5.0** - Framework React con App Router
+- **TypeScript** - Tipado estático para mayor robustez
+- **Tailwind CSS** - Styling utility-first
+- **Shadcn UI** - Componentes de UI modernos y accesibles
+- **@dnd-kit** - Librería de drag & drop
+- **React Hook Form + Zod** - Manejo de formularios y validación
+- **Lucide React** - Iconos modernos y consistentes
+- **date-fns** - Manejo de fechas y formateo
+
+## 📦 Instalación
 
 ```bash
+# Clonar el repositorio
+git clone https://github.com/enzava86-code/youtube-sponsors-kanban.git
+
+# Navegar al directorio
+cd youtube-sponsors-kanban
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Estructura del Proyecto
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # App Router de Next.js
+│   ├── globals.css        # Estilos globales con tema YouTube
+│   └── page.tsx           # Página principal con datos de prueba
+├── components/
+│   ├── kanban/            # Componentes del tablero Kanban
+│   │   ├── KanbanBoard.tsx       # Tablero principal con drag & drop
+│   │   ├── KanbanColumn.tsx      # Columnas como drop zones
+│   │   └── SponsorshipCard.tsx   # Tarjetas draggables
+│   ├── layout/            # Componentes de layout
+│   │   ├── Header.tsx     # Header con búsqueda y acciones
+│   │   └── Layout.tsx     # Layout principal
+│   ├── metrics/           # Dashboard de métricas
+│   │   └── MetricsDashboard.tsx  # KPIs y estadísticas
+│   ├── modals/            # Modales de la aplicación
+│   │   └── CreateSponsorshipModal.tsx  # Modal de creación
+│   └── ui/                # Componentes base de Shadcn UI
+├── types/                 # Definiciones de TypeScript
+│   └── sponsorship.ts     # Interfaces y tipos principales
+└── lib/
+    └── utils.ts          # Utilidades y helpers
+```
 
-## Learn More
+## 📋 Estados del Flujo de Trabajo
 
-To learn more about Next.js, take a look at the following resources:
+1. **🎯 Prospecto** - Marcas identificadas como potenciales patrocinadores
+2. **📞 Contacto Inicial** - Primer contacto realizado con la marca
+3. **🤝 Negociación** - Discusión de términos y condiciones
+4. **📄 Propuesta Enviada** - Propuesta formal enviada y pendiente
+5. **✅ Contrato Firmado** - Acuerdo formalizado y listo para producción
+6. **🎬 Contenido en Producción** - Creación y edición del contenido
+7. **👀 Revisión del Cliente** - Cliente revisando antes de publicación
+8. **📺 Publicado** - Contenido publicado en el canal
+9. **🎉 Completado** - Patrocinio finalizado y pagado
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Scripts Disponibles
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev          # Servidor de desarrollo
+npm run build        # Build de producción
+npm run start        # Ejecutar build de producción
+npm run lint         # Linter de código
+```
 
-## Deploy on Vercel
+## 📱 Características Responsive
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Escritorio**: Vista completa del tablero con todas las columnas
+- **Tablet**: Scroll horizontal suave para navegación
+- **Móvil**: Optimizado para gestos táctiles y drag & drop
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Tema y Colores
+
+El proyecto utiliza el esquema de colores oficial de YouTube:
+
+- **Primary**: YouTube Red (#FF0000)
+- **Indicadores de prioridad**: Verde (Baja), Amarillo (Media), Naranja (Alta), Rojo (Urgente)
+- **Estados de columna**: Colores temáticos para cada etapa del flujo
+
+## 🔜 Próximas Características
+
+- [ ] Sistema de autenticación
+- [ ] Persistencia de datos con base de datos
+- [ ] Notificaciones push para vencimientos
+- [ ] Exportación de reportes
+- [ ] Vista de calendario
+- [ ] Integración con APIs de YouTube
+- [ ] Modo oscuro completo
+- [ ] Filtros avanzados y búsqueda
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas! Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🙏 Reconocimientos
+
+- **Shadcn UI** por los componentes de interfaz
+- **@dnd-kit** por la funcionalidad de drag & drop
+- **Lucide** por los iconos
+- **Vercel** por el hosting y herramientas de desarrollo
+
+---
+
+**Desarrollado con ❤️ para la comunidad de YouTubers**
+
+🔗 **Demo**: [Ver aplicación en vivo](http://localhost:3000)
+🐛 **Issues**: [Reportar bugs](https://github.com/enzava86-code/youtube-sponsors-kanban/issues)
+⭐ **Dale una estrella** si te gusta el proyecto!
