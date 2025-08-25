@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod"; // Temporarily disabled due to type conflicts
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Upload, X } from "lucide-react";
@@ -15,6 +15,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import {
   Form,
@@ -49,7 +59,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { CreateSponsorshipData, ContentType, Currency, PaymentMethod, SponsorshipStatus, Priority } from "@/types/sponsorship";
+import { CreateSponsorshipData, ContentType, Currency, PaymentMethod, SponsorshipStatus, Priority, Sponsorship } from "@/types/sponsorship";
 
 // Schema kept for type inference but temporarily not used for validation
 const formSchema = z.object({
@@ -65,7 +75,7 @@ const formSchema = z.object({
   category: z.string().min(1, "La categoría es requerida"),
   
   // Información financiera
-  monetaryValue: z.number().min(0, "El monto debe ser mayor a 0"),
+  monetaryValue: z.coerce.number().min(0, "El monto debe ser mayor a 0"),
   currency: z.enum(["USD", "EUR", "GBP", "JPY", "CAD", "AUD"]),
   paymentMethod: z.enum(["paypal", "bank_transfer", "wise", "stripe", "crypto"]),
   
@@ -76,7 +86,7 @@ const formSchema = z.object({
   isFlexiblePublishDate: z.boolean().default(false),
   
   // Estado inicial
-  initialStatus: z.enum([
+  status: z.enum([
     "prospect", "initial_contact", "negotiation", "proposal_sent", 
     "contract_signed", "content_production", "client_review", "published", "completed"
   ]).default("prospect"),
@@ -91,43 +101,88 @@ type SponsorshipFormData = z.infer<typeof formSchema>;
 interface CreateSponsorshipModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateSponsorshipData) => void;
-  initialStatus?: SponsorshipStatus;
+  onSubmit: (data: CreateSponsorshipData & { id?: string }) => void;
+  sponsorship?: Sponsorship | null;
 }
 
 export function CreateSponsorshipModal({
   open,
   onClose,
   onSubmit,
-  initialStatus = "prospect"
+  sponsorship
 }: CreateSponsorshipModalProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const form = useForm<SponsorshipFormData>({
-    defaultValues: {
-      initialStatus,
-      priority: "medium",
-      currency: "EUR",
-      paymentMethod: "paypal",
-      type: "video",
-      isFlexiblePublishDate: false,
-    } as SponsorshipFormData,
+    resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = (data: SponsorshipFormData) => {
-    const formattedData: CreateSponsorshipData = {
-      ...data,
-      startDate: data.startDate,
-      deliveryDate: data.deliveryDate,
-      publishDate: data.publishDate,
-    };
-    
-    onSubmit(formattedData);
+  // Detectar cambios en el formulario
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      setHasChanges(true);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  // Manejar el cierre del modal
+  const handleClose = () => {
+    if (hasChanges) {
+      setShowConfirmDialog(true);
+    } else {
+      onClose();
+    }
+  };
+
+  // Confirmar cierre sin guardar
+  const confirmClose = () => {
+    setHasChanges(false);
+    setShowConfirmDialog(false);
     form.reset();
     setLogoFile(null);
     setAttachments([]);
     onClose();
+  };
+
+  useEffect(() => {
+    if (sponsorship) {
+      form.reset({
+        ...sponsorship,
+        startDate: sponsorship.startDate ? new Date(sponsorship.startDate) : undefined,
+        deliveryDate: new Date(sponsorship.deliveryDate),
+        publishDate: sponsorship.publishDate ? new Date(sponsorship.publishDate) : undefined,
+      });
+    } else {
+      form.reset({
+        priority: "medium",
+        currency: "EUR",
+        paymentMethod: "paypal",
+        type: "video",
+        isFlexiblePublishDate: false,
+        status: "prospect",
+      });
+    }
+  }, [sponsorship, form]);
+
+  const handleSubmit = (data: SponsorshipFormData) => {
+    const submissionData: CreateSponsorshipData & { id?: string } = {
+      ...data,
+    };
+
+    // Si estamos editando, añadimos el ID para que el padre sepa qué actualizar
+    if (sponsorship?.id) {
+      submissionData.id = sponsorship.id;
+    }
+    
+    onSubmit(submissionData);
+    setHasChanges(false);
+    form.reset();
+    setLogoFile(null);
+    setAttachments([]);
+    onClose(); // Cierra el modal después de enviar
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'attachments') => {
@@ -205,15 +260,16 @@ export function CreateSponsorshipModal({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-4xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Crear Nuevo Acuerdo de Patrocinio</DialogTitle>
+          <DialogTitle>{sponsorship ? "Editar Acuerdo" : "Crear Nuevo Acuerdo de Patrocinio"}</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh]">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form id="sponsorship-form" onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 p-4">
               <Accordion type="multiple" defaultValue={["brand", "deal"]} className="w-full">
                 
                 {/* Información de la Marca */}
@@ -393,7 +449,6 @@ export function CreateSponsorshipModal({
                                 type="number" 
                                 placeholder="0.00"
                                 {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                               />
                             </FormControl>
                             <FormMessage />
@@ -616,7 +671,7 @@ export function CreateSponsorshipModal({
                   <AccordionContent className="space-y-4">
                     <FormField
                       control={form.control}
-                      name="initialStatus"
+                      name="status"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
                           <FormLabel>Columna de Destino</FormLabel>
@@ -626,7 +681,7 @@ export function CreateSponsorshipModal({
                               defaultValue={field.value}
                               className="grid grid-cols-3 gap-4"
                             >
-                              {statusOptions.slice(0, 6).map((status) => (
+                              {statusOptions.map((status) => (
                                 <FormItem key={status.value} className="flex items-center space-x-2 space-y-0">
                                   <FormControl>
                                     <RadioGroupItem value={status.value} />
@@ -738,7 +793,7 @@ export function CreateSponsorshipModal({
         </ScrollArea>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={handleClose}>
             Cancelar
           </Button>
           <Button type="button" variant="secondary" onClick={() => {
@@ -747,11 +802,33 @@ export function CreateSponsorshipModal({
           }}>
             Guardar como Borrador
           </Button>
-          <Button type="submit" onClick={form.handleSubmit(handleSubmit)}>
-            Crear Acuerdo
+          <Button type="submit" form="sponsorship-form">
+            {sponsorship ? "Guardar Cambios" : "Crear Acuerdo"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    {/* Dialog de confirmación para salir sin guardar */}
+    <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>¿Descartar cambios?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Has realizado cambios en el formulario que se perderán si sales ahora.
+            ¿Estás seguro de que quieres continuar sin guardar?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setShowConfirmDialog(false)}>
+            Continuar editando
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={confirmClose}>
+            Descartar cambios
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
