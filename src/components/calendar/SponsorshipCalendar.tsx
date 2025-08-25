@@ -104,7 +104,7 @@ export function SponsorshipCalendar({ sponsorships }: SponsorshipCalendarProps) 
           onMonthChange={setCurrentMonth}
           className="rounded-md border w-full"
           components={{
-            DayContent: ({ date }) => DayContent(date),
+            Day: ({ day }) => DayContent(day.date),
           }}
         />
       </CardContent>
