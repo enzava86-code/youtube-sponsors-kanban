@@ -200,16 +200,18 @@ export default function HomePage() {
       view={view}
       setView={setView}
     >
-      <div className="space-y-6">
+      <div className="h-full flex flex-col space-y-6">
         {view === 'kanban' ? (
           <>
             <MetricsDashboard metrics={calculateMetrics()} />
-            <KanbanBoard
-              sponsorships={filteredSponsorships}
-              onStatusChange={handleStatusChange}
-              onDelete={handleDeleteSponsorship}
-              onEditSponsorship={handleEditSponsorship}
-            />
+            <div className="flex-1 min-h-0">
+              <KanbanBoard
+                sponsorships={filteredSponsorships}
+                onStatusChange={handleStatusChange}
+                onDelete={handleDeleteSponsorship}
+                onEditSponsorship={handleEditSponsorship}
+              />
+            </div>
           </>
         ) : (
           <SponsorshipCalendar sponsorships={sponsorships} />

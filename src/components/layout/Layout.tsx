@@ -32,7 +32,7 @@ export function Layout({
   setView
 }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header 
         user={user}
         onNewDeal={onNewDeal}
@@ -43,8 +43,10 @@ export function Layout({
         view={view}
         setView={setView}
       />
-      <main className="p-6">
-        {children}
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full p-6 overflow-auto">
+          {children}
+        </div>
       </main>
     </div>
   );

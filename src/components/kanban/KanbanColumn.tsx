@@ -75,7 +75,7 @@ export function KanbanColumn({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[calc(100vh-300px)]">
+        <ScrollArea className="h-[calc(100vh-250px)]">
           <div className="space-y-3 p-3">
             {sponsorships.map((sponsorship) => (
               <SponsorshipCard

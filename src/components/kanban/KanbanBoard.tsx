@@ -154,26 +154,27 @@ export function KanbanBoard({
   }, [sponsorships]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full overflow-hidden">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="w-full overflow-x-auto">
-          <div className="flex space-x-4 p-4 min-w-max">
+        <div className="w-full h-full overflow-x-auto overflow-y-hidden">
+          <div className="flex space-x-4 p-4 min-w-fit h-full">
             {columns.map((column) => (
-              <KanbanColumn
-                key={column.id}
-                title={column.title}
-                status={column.id}
-                sponsorships={getSponsorshipsByStatus(column.id)}
-                onAddSponsorship={() => onAddSponsorship?.(column.id)}
-                onEditSponsorship={onEditSponsorship}
-                onViewSponsorship={onViewSponsorship}
-                onMoveSponsorship={(sponsorship) => onMoveSponsorship?.(sponsorship, column.id)}
-                onDelete={onDelete}
-              />
+              <div key={column.id} className="flex-shrink-0 w-80">
+                <KanbanColumn
+                  title={column.title}
+                  status={column.id}
+                  sponsorships={getSponsorshipsByStatus(column.id)}
+                  onAddSponsorship={() => onAddSponsorship?.(column.id)}
+                  onEditSponsorship={onEditSponsorship}
+                  onViewSponsorship={onViewSponsorship}
+                  onMoveSponsorship={(sponsorship) => onMoveSponsorship?.(sponsorship, column.id)}
+                  onDelete={onDelete}
+                />
+              </div>
             ))}
           </div>
         </div>
